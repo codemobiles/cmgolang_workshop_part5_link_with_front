@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"main/db"
-	_"main/interceptor"
+	_ "main/interceptor"
 	"main/model"
 	"mime/multipart"
 	"net/http"
@@ -25,6 +25,7 @@ func SetupProductAPI(router *gin.Engine) {
 		productAPI.PUT("/product" /*interceptor.JwtVerify,*/, editProduct)
 	}
 }
+
 /*
 func getProduct(c *gin.Context) {
 	var product []model.Product
@@ -39,9 +40,9 @@ func getProduct(c *gin.Context) {
 	keyword := c.Query("keyword")
 	if keyword != "" {
 		keyword = fmt.Sprintf("%%%s%%", keyword)
-		db.GetDB().Where("name like ?", keyword).Find(&product)
+		db.GetDB().Where("name like ?", keyword).Order("created_at DESC").Find(&product)
 	} else {
-		db.GetDB().Find(&product)
+		db.GetDB().Order("created_at DESC").Find(&product)
 	}
 	c.JSON(200, product)
 
@@ -52,7 +53,6 @@ func getProductByID(c *gin.Context) {
 	db.GetDB().Where("id = ?", c.Param("id")).First(&product)
 	c.JSON(200, product)
 }
-
 
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
