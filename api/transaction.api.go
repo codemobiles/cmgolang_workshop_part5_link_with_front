@@ -24,21 +24,33 @@ func SetupTransactionAPI(router *gin.Engine) {
 // 	c.JSON(200, transactions)
 // }
 
+// type TransactionResult struct {
+// 	ID            uint
+// 	Total         float64
+// 	Paid          float64
+// 	Change        float64
+// 	PaymentType   string
+// 	PaymentDetail string
+// 	OrderList     string
+// 	Staff         string
+// 	CreatedAt     time.Time
+// }
+
 type TransactionResult struct {
-	ID            uint
-	Total         float64
-	Paid          float64
-	Change        float64
-	PaymentType   string
-	PaymentDetail string
-	OrderList     string
-	Staff         string
-	CreatedAt     time.Time
+	ID            uint      `json:"id"`
+	Total         float64   `json:"total"`
+	Paid          float64   `json:"paid"`
+	Change        float64   `json:"change"`
+	PaymentType   string    `json:"payment_type"`
+	PaymentDetail string    `json:"payment_detail"`
+	OrderList     string    `json:"order_list"`
+	Staff         string    `json:"staff_id"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 func getTransaction(c *gin.Context) {
 	var result []TransactionResult
-	db.GetDB().Debug().Raw("SELECT transactions.id, total, paid, change, payment_type, payment_detail, order_list, users.username as Staff, transactions.created_at FROM transactions join users on transactions.staff_id = users.id", nil).Scan(&result)
+	db.GetDB().Debug().Raw("SELECT transactions.id, total, paid, change, payment_type, payment_detail, order_list, users.username as Staff, transactions.created_at FROM transactions join users on transactions.staff_id = users.id order by transactions.created_at DESC", nil).Scan(&result)
 	c.JSON(200, result)
 }
 
