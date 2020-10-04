@@ -13,7 +13,7 @@ import (
 func SetupTransactionAPI(router *gin.Engine) {
 	transactionAPI := router.Group("/api/v2")
 	{
-		transactionAPI.GET("/transaction", getTransaction)
+		transactionAPI.GET("/transaction", interceptor.JwtVerify, getTransaction)
 		transactionAPI.POST("/transaction", interceptor.JwtVerify, createTransaction)
 	}
 }
